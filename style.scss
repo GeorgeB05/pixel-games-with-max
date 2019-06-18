@@ -1,0 +1,74 @@
+$colors: (
+	'o': transparent,	
+	'b': brown,
+	'g': green
+);
+$size: 2px !default;
+
+$pixel-art:(
+	platform: (
+		(g g g g g g g g g g g g g g g g g g g g g g g g g g g g g g g g g g g g g g g g g g g g g g g g g g g g g g g g g g g g g g g g g g)
+		(g g g g g g g g g g g g g g g g g g g g g g g g g g g g g g g g g g g g g g g g g g g g g g g g g g g g g g g g g g g g g g g g g g)
+		(b b g g b b b b g b b b b b b g g b b b b b b b g g b b b b b b b b g g b b b b b b g b b b b b b b b b g b b b b b b b g g b b b b)
+		(b b g b b b b b g b b b b b b g b b b b b b b g g b b b b b b b b g g b b b b b b b g g b b b b b b b g g b b b b b b b b g b b b b)
+		(b b b g b b b b b b b b b b b b b b b b b b b g b b b b b b b b b b b b b b b b b b b g b b b b b b b b b b b b b b b b b b b b b b)
+		(b b b b b b b b b b b b b b b b b b b b b b b b b b b b b b b b b b b b b b b b b b b b b b b b b b b b b b b b b b b b b b b b b b)
+		(b b b b b b b b b b b b b b b b b b b b b b b b b b b b b b b b b b b b b b b b b b b b b b b b b b b b b b b b b b b b b b b b b b)
+		(b b b b b b b b b b b b b b b b b b b b b b b b b b b b b b b b b b b b b b b b b b b b b b b b b b b b b b b b b b b b b b b b b b)
+	)
+);
+@function pixelize($matrix, $size){
+	$sh: '';
+	$rows: length($matrix);
+
+	@for $row from 1 through $rows{
+		$row-num: nth($matrix, $row);
+
+		@for $col from 1 through length($row-num) {
+			$dot: nth($row-num, $col);
+
+			$sh: $sh + ($size*$col) + ' ' + ($size*$row) + ' ' + map-get($colors, $dot);
+
+			@if not ($col == length($row-num) and $row == $rows){
+				$sh: $sh + ',';
+			}
+		}
+	}
+	@return unquote($sh);
+}
+
+@mixin style-item($matrix, $size){
+
+}
+#player{
+	position: absolute;
+	z-index: 1;
+}
+#platform{
+	position: absolute;
+	z-index: 0;
+}
+.pixelized--player::after{
+	display: block;
+	height: $size;
+	width: $size;
+	content: '';
+	position: absolute;
+	box-shadow: pixelize(map-get($pixel-art, player), $size);
+}
+.pixelized--platform::after{
+	display: block;
+	height: $size;
+	width: $size;
+	content: '';
+	position: absolute;
+	box-shadow: pixelize(map-get($pixel-art, platform), $size);
+}
+@keyframes drop_down{
+	from{
+		transform: translateY(-100vh);	
+	}
+	to{
+		transform: translateY(0vh);	
+	}
+}
